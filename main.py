@@ -1,6 +1,8 @@
 import telebot
 from telebot import types
 import settings
+import view
+import get_weather
 
 bot = telebot.TeleBot(settings.TELE_BOT_TOKEN)
 
@@ -14,17 +16,22 @@ def start(message):
 @bot.message_handler(commands=['help'])
 def help(message):
     markup = types.ReplyKeyboardMarkup()
-    website = types.KeyboardButton()
+    website = types.KeyboardButton('Трам пам')
 
     markup.add(types.InlineKeyboardButton('Пумц на Яндекс', url='http://www.yandex.ru'))
     bot.send_message(message.chat.id, '<u>Идите на яндекс</u>', parse_mode='html', reply_markup=markup)
 
+@bot.message_handler(commands=['weather'])
+def weather(message):
+    get_weather.get_meteo('Новый порт')
+    mess = view.html_view()
+    bot.send_message(message.chat.id, mess, parse_mode='html')
 
 @bot.message_handler(commands=['website'])
 def website(message):
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton('Пумц на Яндекс', url = 'http://www.yandex.ru'))
-    bot.send_message(message.chat.id, '<u>Идите на яндекс</u>', parse_mode='html', reply_markup=markup)
+    bot.send_message(message.chat.id, '<u>Идите на Яндекс</u>', parse_mode='html', reply_markup=markup)
 
 
 @bot.message_handler(content_types=['text'])
@@ -33,9 +40,9 @@ def get_user_text(message):
         bot.send_message(message.chat.id, 'И тебе хеллоу', parse_mode='html')
     elif message.text == 'id':
         bot.send_message(message.chat.id, f'Твой ID: {message.from_user.id}', parse_mode='html')
-    elif message.text == 'photo':
-        photo = open('its_worked.gif', 'rb')
-        bot.send_photo(message.chat.id, photo)
+#    elif message.text == 'photo':
+#        photo = open('its_worked.gif', 'rb')
+#        bot.send_photo(message.chat.id, photo)
     else:
         bot.send_message(message.chat.id, 'Моя твоя непонимайт', parse_mode='html')
         #bot.send_message(message.chat.id, message, parse_mode='html')
