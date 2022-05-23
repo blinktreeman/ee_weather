@@ -1,21 +1,28 @@
 import requests
 import json
-import dadata
 import settings
+import model
 
 
-dadata = dadata.Dadata(settings.DADATA_TOKEN, settings.DADATA_SECRET)
-result = dadata.clean("address", "новый порт")
-print(result['geo_lat'])
-print(result['geo_lon'])
-print(result['result'])
+def get_meteo(city):
+    import dadata
+    # Определяем широту, долготу по запросу
+    dadata = dadata.Dadata(settings.DADATA_TOKEN, settings.DADATA_SECRET)
+    geo_data = dadata.clean("address", 'Новый порт')
+    if geo_data['result']:
+        lat = geo_data['geo_lat']
+        lon = geo_data['geo_lon']
+        # Запрос метеоданных по координатам
+        url = 'https://api.openweathermap.org/data/2.5/weather'
+        response = requests.get(url, params={'lat': lat, 'lon': lon,
+                                            'exclude': 'current', 'units': 'metric',
+                                            'lang': 'ru', 'appid': settings.OWM_API_KEY})
+        meteo_data = json.loads(response.text)
+        model.init(meteo_data, geo_data['result'])
+    else:
+        print('Место не найдено!')
 
-lat = result['geo_lat']
-lon = result['geo_lon']
-url = 'https://api.openweathermap.org/data/2.5/forecast'
-response = requests.get(url, params={'lat': lat, 'lon': lon,
-                                     'exclude': 'current', 'units': 'metric',
-                                     'lang': 'ru', 'appid': settings.OWM_API_KEY})
-data = json.loads(response.text)
 
-print(data)
+#print(model.weather_model['city'])
+#print(model.weather_model['temperature'])
+
