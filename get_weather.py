@@ -8,7 +8,7 @@ def get_meteo(city):
     import dadata
     # Определяем широту, долготу по запросу
     dadata = dadata.Dadata(settings.DADATA_TOKEN, settings.DADATA_SECRET)
-    geo_data = dadata.clean("address", 'Новый порт')
+    geo_data = dadata.clean("address", city)
     if geo_data['result']:
         lat = geo_data['geo_lat']
         lon = geo_data['geo_lon']

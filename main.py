@@ -15,15 +15,23 @@ def start(message):
 
 @bot.message_handler(commands=['help'])
 def help(message):
-    markup = types.ReplyKeyboardMarkup()
-    website = types.KeyboardButton('Трам пам')
+    mess = 'Чтобы узнать погоду в городе\n'
+    mess += 'введите /weather "название города"'
+    bot.send_message(message.chat.id, mess, parse_mode='html')
 
-    markup.add(types.InlineKeyboardButton('Пумц на Яндекс', url='http://www.yandex.ru'))
-    bot.send_message(message.chat.id, '<u>Идите на яндекс</u>', parse_mode='html', reply_markup=markup)
+#    markup = types.ReplyKeyboardMarkup()
+#    website = types.KeyboardButton('Трам пам')
+
+#    markup.add(types.InlineKeyboardButton('Пумц на Яндекс', url='http://www.yandex.ru'))
+#    bot.send_message(message.chat.id, '<u>Идите на яндекс</u>', parse_mode='html', reply_markup=markup)
 
 @bot.message_handler(commands=['weather'])
 def weather(message):
-    get_weather.get_meteo('Новый порт')
+    args = message.text.split()
+    city_string = ''
+    if len(args) > 1:
+        city_string = ' '.join(args[1:])
+    get_weather.get_meteo(city_string)
     mess = view.html_view()
     bot.send_message(message.chat.id, mess, parse_mode='html')
 
