@@ -22,7 +22,3 @@ def get_meteo(city):
     else:
         print('Место не найдено!')
 
-
-#print(model.weather_model['city'])
-#print(model.weather_model['temperature'])
-
